@@ -16,19 +16,19 @@ class AppComponent: ApplicationComponent {
         val application = ApplicationManager.getApplication()
         NotificationsConfiguration.getNotificationsConfiguration().register(groupDisplayId, STICKY_BALLOON, true)
 
-        initOsxKeyLayoutInstaller(
-            bundleName = "ijkl-keys.bundle",
-            systemPathToBundle = "/Library/Keyboard Layouts/ijkl-keys.bundle",
-            userPathToBundle = "${System.getProperty("user.home")}/Library/Keyboard Layouts/ijkl-keys.bundle",
-            application = application,
-            logger = logger
-        )
+//        initOsxKeyLayoutInstaller(
+//            bundleName = "ijkl-keys.bundle",
+//            systemPathToBundle = "/Library/Keyboard Layouts/ijkl-keys.bundle",
+//            userPathToBundle = "${System.getProperty("user.home")}/Library/Keyboard Layouts/ijkl-keys.bundle",
+//            application = application,
+//            logger = logger
+//        )
 
-        initCurrentKeymapModifier(
-            keymapInputStream = resourceInputStream(if (SystemInfo.isMac) "ijkl-osx-keymap.xml" else "ijkl-keymap.xml"),
-            application = application,
-            logger = logger
-        )
+//        initCurrentKeymapModifier(
+//            keymapInputStream = resourceInputStream(if (SystemInfo.isMac) "ijkl-osx-keymap.xml" else "ijkl-keymap.xml"),
+//            application = application,
+//            logger = logger
+//        )
 
         initEventReDispatch(
             ideEventQueue = IdeEventQueue.getInstance(),

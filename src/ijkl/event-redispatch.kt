@@ -12,6 +12,7 @@ import java.awt.AWTEvent
 import java.awt.Component
 import java.awt.Event.ALT_MASK
 import java.awt.KeyboardFocusManager
+import java.awt.event.InputEvent
 import java.awt.event.KeyEvent
 import java.awt.event.KeyEvent.*
 import java.util.*
@@ -69,9 +70,9 @@ private class IjklEventDispatcher(
 
     override fun dispatch(event: AWTEvent): Boolean {
         if (event !is KeyEvent) return false
-        if (event.modifiers.and(ALT_MASK) == 0) return false
+        if (event.modifiers.and(InputEvent.ALT_GRAPH_MASK) == 0) return false
 
-        val newEvent = event.mapIfIjkl()
+        val newEvent = event.mapIfHjkl()
 
         return if (newEvent != null) {
             ideEventQueue.dispatchEvent(newEvent)
@@ -82,11 +83,11 @@ private class IjklEventDispatcher(
     }
 
     @Suppress("NOTHING_TO_INLINE")
-    private inline fun KeyEvent.mapIfIjkl(): KeyEvent? {
+    private inline fun KeyEvent.mapIfHjkl(): KeyEvent? {
         // For performance optimisation reasons do the cheapest checks first, i.e. key code, popup, focus in tree.
         // There is no empirical evidence that these optimisations are actually useful though.
         val isIjkl =
-            keyCode == VK_I || keyCode == VK_J ||
+            keyCode == VK_H || keyCode == VK_J ||
             keyCode == VK_K || keyCode == VK_L ||
             keyCode == VK_F || keyCode == VK_W ||
             keyCode == VK_U || keyCode == VK_O ||
@@ -100,15 +101,10 @@ private class IjklEventDispatcher(
         // (Must be done before hasParentTree() because Find in Path popup has a tree but alt+jl shouldn't be mapped like for a tree.)
         if (component.hasParentSearchTextArea() || component.hasParentChooseByName()) {
             when (keyCode) {
-                VK_I -> return copyWithoutAlt(VK_UP)
-                VK_K -> return copyWithoutAlt(VK_DOWN)
-                VK_J -> return copyWithModifier(VK_LEFT)
-                VK_L -> return copyWithModifier(VK_RIGHT)
-                VK_U -> return copyWithoutAlt(VK_HOME)
-                VK_O -> return copyWithoutAlt(VK_END)
-                VK_N -> return copyWithoutAlt(VK_LEFT) // Convert to keys without alt so that it's not interpret as typed characters by input field.
-                VK_M -> return copyWithoutAlt(VK_RIGHT) // Convert to keys without alt so that it's not interpret as typed characters by input field.
-                VK_SEMICOLON -> return copyWithoutAlt(VK_DELETE) // Convert to keys without alt so that it's not interpret as typed characters by input field.
+                VK_H -> return copyWithoutAltGraph(VK_LEFT)
+                VK_J -> return copyWithoutAltGraph(VK_DOWN)
+                VK_K -> return copyWithoutAltGraph(VK_UP)
+                VK_L -> return copyWithoutAltGraph(VK_RIGHT)
             }
         }
 
@@ -121,41 +117,33 @@ private class IjklEventDispatcher(
             if (id == KEY_TYPED) return null
 
             when (keyCode) {
-                VK_I -> return copyWithoutAlt(VK_UP)
-                VK_K -> return copyWithoutAlt(VK_DOWN)
-                VK_J -> return copyWithoutAlt(VK_LEFT) // Convert to "left" so that in trees it works as "collapse node".
-                VK_L -> return copyWithoutAlt(VK_RIGHT) // Convert to "right" so that in trees it works as "expand node".
-                VK_F -> return copyWithoutAlt(VK_PAGE_DOWN)
-                VK_W -> return copyWithoutAlt(VK_PAGE_UP)
-                VK_U -> return copyWithoutAlt(VK_HOME)
-                VK_O -> return copyWithoutAlt(VK_END)
+                VK_H -> return copyWithoutAltGraph(VK_LEFT)
+                VK_J -> return copyWithoutAltGraph(VK_DOWN)
+                VK_K -> return copyWithoutAltGraph(VK_UP)
+                VK_L -> return copyWithoutAltGraph(VK_RIGHT)// Convert to "right" so that in trees it works as "expand node".
             }
         }
 
         val useCommitDialogWorkarounds = !hasParentTree && component.hasParentCommitDialog()
         if (useCommitDialogWorkarounds) {
             when (keyCode) {
-                VK_I -> return null // No mapping so that alt+i triggers "Commit" action.
-                VK_K -> return null // No mapping for the symmetry with VK_I.
-                VK_J -> return copyWithModifier(VK_LEFT) // Override for the symmetry with the VK_L.
-                VK_L -> return copyWithModifier(VK_RIGHT) // Override mnemonic for "Clean code" (assuming move left is used more often).
-                VK_N -> return copyWithoutAlt(VK_LEFT) // Override for the symmetry with the VK_M.
-                VK_M -> return copyWithoutAlt(VK_RIGHT) // Override mnemonic for "Amend commit" (assuming that commits are not amended very often).
-                VK_U -> return copyWithoutAlt(VK_HOME) // Override for the symmetry with the VK_O.
-                VK_O -> return copyWithoutAlt(VK_END) // Override mnemonic for "Optimise imports".
+                VK_H -> return copyWithoutAltGraph(VK_LEFT)
+                VK_J -> return copyWithoutAltGraph(VK_DOWN)
+                VK_K -> return copyWithoutAltGraph(VK_UP)
+                VK_L -> return copyWithoutAltGraph(VK_RIGHT)
             }
         }
 
         if (ideEventQueue.isPopupActive) {
             if (component.hasParentWizardPopup()) {
                 when (keyCode) {
-                    VK_J -> return copyWithoutAlt(VK_LEFT) // Convert to "left" so that it works as "collapse sub-menu".
-                    VK_L -> return copyWithoutAlt(VK_RIGHT) // Convert to "left" so that it works as "expand sub-menu".
+                    VK_H -> return copyWithoutAltGraph(VK_LEFT)
+                    VK_L -> return copyWithoutAltGraph(VK_RIGHT)
                 }
             }
             when (keyCode) {
-                VK_F -> return copyWithoutAlt(VK_PAGE_DOWN)
-                VK_W -> return copyWithoutAlt(VK_PAGE_UP)
+                VK_J -> return copyWithoutAltGraph(VK_DOWN)
+                VK_K -> return copyWithoutAltGraph(VK_UP)
             }
         }
 
@@ -168,12 +156,12 @@ private class IjklEventDispatcher(
 //  - if it's some other letter, then in Navigate to File/Class the letter is inserted into text area
 private const val zeroChar = 0.toChar()
 
-private fun KeyEvent.copyWithoutAlt(keyCode: Int) =
+private fun KeyEvent.copyWithoutAltGraph(keyCode: Int) =
     KeyEvent(
         source as Component,
         id,
         `when`,
-        modifiers.and(ALT_MASK.inv()),
+        modifiers.and(InputEvent.ALT_GRAPH_MASK.inv()),
         keyCode,
         zeroChar
     )
