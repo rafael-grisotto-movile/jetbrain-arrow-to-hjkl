@@ -70,7 +70,7 @@ private class IjklEventDispatcher(
 
     override fun dispatch(event: AWTEvent): Boolean {
         if (event !is KeyEvent) return false
-        if (event.modifiers.and(InputEvent.ALT_GRAPH_MASK) == 0) return false
+        if (event.modifiers.and(ALT_MASK) == 0) return false
 
         val newEvent = event.mapIfHjkl()
 
@@ -161,7 +161,7 @@ private fun KeyEvent.copyWithoutAltGraph(keyCode: Int) =
         source as Component,
         id,
         `when`,
-        modifiers.and(InputEvent.ALT_GRAPH_MASK.inv()),
+        modifiers.and(ALT_MASK.inv()),
         keyCode,
         zeroChar
     )
