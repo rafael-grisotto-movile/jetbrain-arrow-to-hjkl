@@ -27,7 +27,7 @@ fun initEventReDispatch(
     val focusOwnerFinder = FocusOwnerFinder(keyboardFocusManager)
     val dispatcher = IjklEventDispatcher(focusOwnerFinder, ideEventQueue)
 
-    // This is a workaround to make sure ijkl dispatch works in popups,
+    // This is a workaround to make sure hjkl dispatch works in popups,
     // because IdeEventQueue invokes popup dispatchers before custom dispatchers.
     val popupEventDispatcher = IjklIdePopupEventDispatcher(dispatcher, focusOwnerFinder, afterDispatch = {
         ideEventQueue.popupManager.remove(it)
@@ -86,14 +86,11 @@ private class IjklEventDispatcher(
     private inline fun KeyEvent.mapIfHjkl(): KeyEvent? {
         // For performance optimisation reasons do the cheapest checks first, i.e. key code, popup, focus in tree.
         // There is no empirical evidence that these optimisations are actually useful though.
-        val isIjkl =
+        val isHjkl =
             keyCode == VK_H || keyCode == VK_J ||
             keyCode == VK_K || keyCode == VK_L ||
-            keyCode == VK_F || keyCode == VK_W ||
-            keyCode == VK_U || keyCode == VK_O ||
-            keyCode == VK_M || keyCode == VK_N ||
             keyCode == VK_SEMICOLON
-        if (!isIjkl) return null
+        if (!isHjkl) return null
 
         val component = focusOwnerFinder.find()
 

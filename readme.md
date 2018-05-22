@@ -1,5 +1,5 @@
 
 ## HJKL shortcuts plugin
 
-This is a plugin which enforces `altgr-hjkl`in jetbrain ides, 
+This is a plugin which enforces `alt-hjkl`in jetbrain ides, vim-mode 
 

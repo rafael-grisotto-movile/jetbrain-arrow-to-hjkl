@@ -20,7 +20,7 @@ apply { plugin("org.jetbrains.intellij") }
 plugins {
     java
     idea
-    kotlin("jvm").version("1.1.1")
+    kotlin("jvm").version("1.2.41")
 }
 java {
     sourceCompatibility = VERSION_1_8

@@ -11,8 +11,8 @@ import java.io.Closeable
 import java.io.File
 import java.io.InputStream
 
-val groupDisplayId = "IJKL Shortcuts"
-private val notificationTitle = "IJKL Shortcuts plugin"
+val groupDisplayId = "hJKL Shortcuts"
+private val notificationTitle = "hJKL Shortcuts plugin"
 
 fun resourceInputStream(fileName: String): InputStream =
     if (File(fileName).exists()) File(fileName).inputStream()

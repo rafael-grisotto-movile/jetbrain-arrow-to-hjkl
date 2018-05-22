@@ -1,30 +1,19 @@
 <idea-plugin>
-    <id>dt-hjkl-shortcuts</id>
-    <name>DT-HJKL Shortctus</name>
+    <id>hjkl-shortcuts</id>
+    <name>HJKL Shortctus</name>
     <version>1.18</version>
-    <vendor email="dmitry.kandalov@gmail.com" url="https://github.com/dkandalov/ijkl-shortcuts-plugin">Dmitry Kandalov</vendor>
+    <vendor email="rafaelgrisotto@gmail.com" url="https://github.com/grisotto/jetbrain-arrow-to-hjkl">Rafael Grisotto</vendor>
 
     <description><![CDATA[
         Plugin which imposes alt-ijkl navigation shortcuts on currently open keymap.
         The idea is that these shortcuts are more ergonomic for navigation and editing than using keyboard arrows.
         Some of the shortcuts:
         <ul>
-            <li>alt-i - line up</li>
-            <li>alt-j - move to previous word</li>
-            <li>alt-k - line down</li>
+            <li>alt-k - line up</li>
+            <li>alt-h - move to previous word</li>
+            <li>alt-j - line down</li>
             <li>alt-l - move to next word</li>
-            <li>alt-n - move left</li>
-            <li>alt-m - move right</li>
-            <li>alt-u - move to start of line</li>
-            <li>alt-o - move to end of line</li>
-            <li>alt-shift-ijklmnuo - navigate with selection</li>
-            <li>alt-d - delete next word</li>
-            <li>alt-; - delete next character</li>
         </ul>
-        Note that in OSX you will need to configure keyboard input source without dead keys.
-        This can be done after plugin startup in notification popup.
-        <br/>
-        For more details see <a href="https://github.com/dkandalov/ijkl-shortcuts-plugin">GitHub</a>.
         <br/><br/>
     ]]></description>
 
